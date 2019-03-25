@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .serializers import AlbumSerializer,BandSerializer,GenreSerializer,RegisterGenreSerializer
-from .models import Album,Band,Genre
+from .serializers import AlbumSerializer,BandSerializer,GenreSerializer,RegisterGenreSerializer,RegisterNewsSerializer
+from .models import Album,Band,Genre,BandMember,News
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -82,4 +82,51 @@ class DeleteGenerView(APIView):
         else:
             return Response('Cannot delete Genre details .')
 
+class UpdateBandMembersView(APIView):
+    def post(self,request,format=None):
+        member_name2 = request.data['member_name']
+        desc2 = request.data['desc']
+        member_data = BandMember.objects.get(member_name=member_name2)
+        member = BandMember.objects.filter(member_id=member_data.member_id).update(member_name=member_name2,desc=desc2)
+        if (member):
+            return Response('BandMemberData updated successfully!')
+        else:
+            return Response('Error while updating BandMemberData !')
 
+class DeleteBandMembersView(APIView):
+    def post(self, request, format=None):
+        member_name2 = request.data['member_name']
+        data = get_object_or_404(BandMember, member_name=member_name2)
+        if (data.delete()):
+            return Response('BandMemberData deleted successfully !!')
+        else:
+            return Response('Cannot delete BandMemberData  .')
+
+
+class UpdateAlbumDetailsView(APIView):
+    def post(self,request,format=None):
+        released_on2 = request.data['released_on']
+        label2 = request.data['label']
+        label_data = Album.objects.get(label=label2)
+        data = Album.objects.filter(album_id=label_data.album_id).update(released_on=released_on2,label=label2)
+        if (data):
+            return Response('AlbumData updated successfully!')
+        else:
+            return Response('Error while updating AlbumData !')
+
+class DeleteAlbumDetailsView(APIView):
+    def post(self, request, format=None):
+        label2 = request.data['label']
+        data = get_object_or_404(Album, label=label2)
+        if (data.delete()):
+            return Response('AlbumData deleted successfully !!')
+        else:
+            return Response('Cannot delete AlbumData  .')
+
+class RegisterNewsDetailsView(APIView):
+    def post(self,request,format=None):
+        serializer = RegisterNewsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

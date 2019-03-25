@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Album,Band,Genre
+from .models import Album,Band,Genre,News
 
 
 class AlbumSerializer(serializers.ModelSerializer):
@@ -20,4 +20,9 @@ class GenreSerializer(serializers.ModelSerializer):
 class RegisterGenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
+        fields = '__all__'
+
+class RegisterNewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = News
         fields = '__all__'
