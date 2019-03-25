@@ -54,6 +54,33 @@ class ChangepasswordExpertView(APIView):
         else:
             return Response('Error while updating password')
 
+class UpdateExpertsView(APIView):
+    def post(self,request,format=None):
+        username = request.data['username']
+        email = request.data['email']
+
+        user_id = experts.objects.get(username=username)
+        phone = request.data['phone']
+
+        password = request.data['password']
+        band = experts.objects.filter(id=user_id.id).update(username=username, email=email, phone=phone,
+                                                              password=password)
+        if (band):
+            return Response('Data updated successfully!')
+        else:
+            return Response('Error while updating Data !')
+
+class DeleteExpertsView(APIView):
+    def post(self,request,format=None):
+        email = request.data['email']
+        data = experts.objects.get(email=email)
+        if (data.delete()):
+            return Response('User deleted successfully !!')
+        else:
+            return Response('Cannot delete User details .')
+
+
+
 
 
 

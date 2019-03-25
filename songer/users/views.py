@@ -1,12 +1,15 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+
 from rest_framework.views import APIView
-from .models import  UserModel
+from .models import UserModel
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserSerializer,UserRegistrationSerializer,UserLoginSerializer,ChangePasswordSerializer
 from rest_framework.authentication import SessionAuthentication,BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 # Create your views here.
+
 class UserView(APIView):
     def get(self,request,format=None):
         users = UserModel.objects.all()
@@ -33,7 +36,7 @@ class UserLoginView(APIView):
         password = request.data['password']
         print(email)
         print(password)
-        user2 = UserModel.objects.get(email=email)
+        user2 = get_object_or_404(UserModel,email=email)
         print(user2.id)
         request.session['userid'] = user2.id
         print(request.session['userid'])
@@ -41,7 +44,7 @@ class UserLoginView(APIView):
         #     return Response('Please provide an email')
         # if password is None:
         #     return Response('Please provide password')
-        user = UserModel.objects.filter(email =email,password=password)
+        user = get_object_or_404(UserModel,email =email,password=password)
         if(user):
             print()
             return Response('Logged in successfully')
@@ -65,3 +68,28 @@ class ChangePasswordView(APIView):
             return Response('Password changed successfully')
         else:
             return Response('Cannot change the password ')
+
+class UpdateUserView(APIView):
+    def post(self,request,format=None):
+        username = request.data['username']
+        email = request.data['email']
+
+
+        user_id = UserModel.objects.get(username=username)
+        phone = request.data['phone']
+
+        password = request.data['password']
+        band = UserModel.objects.filter(id=user_id.id).update(username = username,email=email,phone=phone,password=password)
+        if (band):
+            return Response('Data updated successfully!')
+        else:
+            return Response('Error while updating Data !')
+
+class DeleteUserView(APIView):
+    def post(self,request,format=None):
+        email = request.data['email']
+        data = UserModel.objects.get(email=email)
+        if (data.delete()):
+            return Response('User deleted successfully !!')
+        else:
+            return Response('Cannot delete User details .')

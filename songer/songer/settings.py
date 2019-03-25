@@ -31,10 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'songer_admn',
+    'patreons',
     'experts',
     'users',
-    'patreons',
+    'songer_admn',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
