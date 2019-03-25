@@ -87,7 +87,7 @@ class UpdateUserView(APIView):
 
 class DeleteUserView(APIView):
     def post(self,request,format=None):
-        email = request.data['email']
+        email = request.data['emai  l']
         data = UserModel.objects.get(email=email)
         if (data.delete()):
             return Response('User deleted successfully !!')
