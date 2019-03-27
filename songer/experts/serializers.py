@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import experts
+from .models import experts,ExpertReview
 
 class Expertserializer(serializers.ModelSerializer):
     class Meta:
@@ -20,4 +20,9 @@ class ChangepasswordExpertSerializer(serializers.ModelSerializer):
     class Meta:
         model = experts
         fields = ['password']
+
+class ExpertReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExpertReview
+        fields = '__all__'
 

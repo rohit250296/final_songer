@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .serializers import Expertserializer,RegisterExpertSerializer,ChangepasswordExpertSerializer
+from .serializers import Expertserializer,RegisterExpertSerializer,ChangepasswordExpertSerializer,ExpertReviewSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import experts
+from .models import experts,ExpertReview
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -78,6 +79,29 @@ class DeleteExpertsView(APIView):
             return Response('User deleted successfully !!')
         else:
             return Response('Cannot delete User details .')
+
+class RegisterExpertReviewDetailsView(APIView):
+    def post(self,request,format=None):
+        serializer = ExpertReviewSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.data, status.HTTP_400_BAD_REQUEST)
+
+class UpdateExpertReviewView(APIView):
+    def post(self,request,format=None):
+        review2 = request.data['review']
+        review_id2 = ExpertReview.objects.get(review=review2)
+        data = get_object_or_404(ExpertReview,review=review_id2.expert_review_id).update(review=review2)
+        if (data):
+            return Response('ExpertReview updated successfully!')
+        else:
+            return Response('Error while updating ExpertReview !')
+
+
+
+
+
 
 
 
