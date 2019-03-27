@@ -4,6 +4,7 @@ from .models import Patreon,Review
 from .serializers import PatreonsSerializer,RegisterPatreonsSerializer,LoginPatreonsSerializer,ChangePasswordPatreonSerializer,ReviewSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 class GetPatreonsView(APIView):
@@ -41,13 +42,16 @@ class LoginPatreonView(APIView):
 
 class ChangePasswordPatreonView(APIView):
     def post(self,request,format=None):
-        password = request.data['password']
-        patid = request.session['patreonid']
-        patreon = Patreon.objects.filter(id=patid).update(password=password)
-        if(patreon):
-            return Response('Password updated successfully!')
+        if(request.session['patreonid'] == None):
+            return Response('Please login to continue !!')
         else:
-            return Response('Error while updating password !')
+            password = request.data['password']
+            patid = request.session['patreonid']
+            patreon = get_object_or_404(id=patid).update(password=password)
+            if(patreon):
+                return Response('Password updated successfully!')
+            else:
+                return Response('Error while updating password !')
 
 
 class PostReview(APIView):
@@ -73,7 +77,7 @@ class UpdatePatreonView(APIView):
         phone = request.data['phone']
 
         password = request.data['password']
-        band = Patreon.objects.filter(id=user_id.id).update(username=username, email=email, phone=phone,
+        band = get_object_or_404(Patreon,id=user_id.id).update(username=username, email=email, phone=phone,
                                                               password=password)
         if (band):
             return Response('Data updated successfully!')

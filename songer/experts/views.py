@@ -92,14 +92,21 @@ class UpdateExpertReviewView(APIView):
     def post(self,request,format=None):
         review2 = request.data['review']
         review_id2 = ExpertReview.objects.get(review=review2)
-        data = get_object_or_404(ExpertReview,review=review_id2.expert_review_id).update(review=review2)
+        data = ExpertReview.objects.filter(expert_review_id=review_id2.expert_review_id).update(review=review2)
         if (data):
             return Response('ExpertReview updated successfully!')
         else:
             return Response('Error while updating ExpertReview !')
 
 
-
+class DeleteExpertsReview(APIView):
+    def post(self,request,format=None):
+        review2 = request.data['review']
+        data = ExpertReview.objects.get(review=review2)
+        if (data.delete()):
+            return Response('ExpertReview deleted successfully !!')
+        else:
+            return Response('Cannot delete ExpertReview  .')
 
 
 

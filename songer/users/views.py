@@ -32,6 +32,7 @@ class UserRegistrationView(APIView):
 
 class UserLoginView(APIView):
     def post(self,request,format=None):
+       # print(request.session['userid'])
         email = request.data['email']
         password = request.data['password']
         print(email)
@@ -58,16 +59,21 @@ class UserLoginView(APIView):
         #         return Response('User not present')
 
 class ChangePasswordView(APIView):
-    authentication_classes = [SessionAuthentication,BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+
     def post(self,request,format=None):
-        pwd = request.data['password']
-        id = request.session['userid']
-        user = UserModel.objects.filter(id=id).update(password=pwd)
-        if(user):
-            return Response('Password changed successfully')
+
+        if request.session.get('userid'):
+
+            return Response('Please login to continue!!')
         else:
-            return Response('Cannot change the password ')
+            pwd = request.data['password']
+            id = request.session.get('userid')
+            print(id)
+            user = get_object_or_404(UserModel,id=id).update(password=pwd)
+            if(user):
+                return Response('Password changed successfully')
+            else:
+                return Response('Cannot change the password ')
 
 class UpdateUserView(APIView):
     def post(self,request,format=None):
@@ -87,7 +93,7 @@ class UpdateUserView(APIView):
 
 class DeleteUserView(APIView):
     def post(self,request,format=None):
-        email = request.data['emai  l']
+        email = request.data['email']
         data = UserModel.objects.get(email=email)
         if (data.delete()):
             return Response('User deleted successfully !!')

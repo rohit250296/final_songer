@@ -19,6 +19,7 @@ class Review(models.Model):
     pat_id = models.ForeignKey(Patreon,on_delete=models.CASCADE)
     album_id = models.ForeignKey('songer_admn.Album',on_delete=models.CASCADE,default=None)
     claps = models.IntegerField(default=0)
+    pat_rating = models.IntegerField(default=0)
 
     def __str__(self):
         return self.review
